@@ -123,7 +123,7 @@ function MSMEDashboardContent() {
                     : "New Source",
               });
             }
-            setData((prev) => (prev ? { ...prev, score: newVal, band: res.band as ScoreBand, auditId: res.auditRecord?.id, blockchainVerified: true } : null));
+            setData((prev) => (prev ? { ...prev, score: newVal, band: res.band as ScoreBand, auditId: res.auditRecord?.id ?? prev.auditId, blockchainVerified: true } : null));
           }
         })
         .catch((err) => console.error("Recompute failed", err));
