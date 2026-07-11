@@ -27,12 +27,12 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    alert("An OTP has been sent to your email. Delivery can take a minute.");
     setLoading(true);
     const result = await loginUser(email, password, role);
     if (result.success) {
       if (result.otpRequired) {
         setOtpRequired(true);
-        alert("An OTP has been sent to your email. Delivery can take a minute.");
       } else {
         login(email, role);
         if (role === "bank_officer") router.push("/bank");
