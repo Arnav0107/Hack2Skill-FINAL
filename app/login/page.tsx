@@ -32,6 +32,7 @@ export default function LoginPage() {
     if (result.success) {
       if (result.otpRequired) {
         setOtpRequired(true);
+        alert("An OTP has been sent to your email. Delivery can take a minute.");
       } else {
         login(email, role);
         if (role === "bank_officer") router.push("/bank");
@@ -368,7 +369,7 @@ export default function LoginPage() {
                       required
                     />
                     <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.74rem", color: "#8B6914", marginTop: "0.75rem", lineHeight: 1.5 }}>
-                      ℹ️ An OTP has been sent. For this demo, check the <b>backend terminal console log</b> to find the code.
+                      ℹ️ An OTP has been sent to your email. Delivery can take a minute.
                     </p>
                   </div>
                 </>
@@ -397,9 +398,22 @@ export default function LoginPage() {
                 type="submit"
                 className="btn-primary"
                 disabled={loading}
-                style={{ width: "100%", justifyContent: "center", opacity: loading ? 0.7 : 1 }}
+                style={{ width: "100%", justifyContent: "center", alignItems: "center", display: "flex", gap: "0.5rem", opacity: loading ? 0.7 : 1 }}
               >
-                {loading ? "Verifying…" : otpRequired ? "Verify & Sign In →" : "Sign In →"}
+                {loading && (
+                  <span
+                    style={{
+                      width: 14,
+                      height: 14,
+                      border: "2px solid rgba(255,255,255,0.4)",
+                      borderTop: "2px solid #ffffff",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      animation: "spin 0.8s linear infinite",
+                    }}
+                  />
+                )}
+                {loading ? (otpRequired ? "Verifying…" : "Sending code…") : otpRequired ? "Verify & Sign In →" : "Sign In →"}
               </button>
 
               {otpRequired && (
@@ -469,6 +483,7 @@ export default function LoginPage() {
           }
         }
       `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </ClickSpark>
   );
