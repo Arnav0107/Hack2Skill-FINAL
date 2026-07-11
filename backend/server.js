@@ -15,9 +15,16 @@ const { anchorScoreRecord, verifyRecord, estimateAnchorGas } = require("./servic
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = process.env.JWT_SECRET || "saksham-super-secret-key-2026-hackathon";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("FATAL: JWT_SECRET is not set in environment variables.");
+  process.exit(1);
+}
 
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(",")
+  : ["http://localhost:3000"];
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 // Configure email transporter

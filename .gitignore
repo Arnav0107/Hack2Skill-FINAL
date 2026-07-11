@@ -38,3 +38,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# deployment & secret files
+.env
+.env.local
+backend/.env
+backend/prisma/dev.db
+backend/ml_service/__pycache__/
+*.pyc

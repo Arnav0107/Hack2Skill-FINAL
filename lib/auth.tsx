@@ -7,6 +7,7 @@ import React, {
   useEffect,
   type ReactNode,
 } from "react";
+import { API_BASE } from "./api";
 
 export type UserRole = "msme" | "bank_officer" | "admin";
 
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // 2. Fetch the profile details to keep it updated
       const token = localStorage.getItem("saksham_jwt");
       if (token) {
-        fetch("http://localhost:4000/api/v1/msme/me/dashboard", {
+        fetch(`${API_BASE}/msme/me/dashboard`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -105,7 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (role === "msme") {
       const token = localStorage.getItem("saksham_jwt");
       if (token) {
-        fetch("http://localhost:4000/api/v1/msme/me/dashboard", {
+        fetch(`${API_BASE}/msme/me/dashboard`, {
           headers: {
             "Authorization": `Bearer ${token}`
           }
