@@ -387,7 +387,7 @@ export async function lookupGstin(gstin: string): Promise<{ success: boolean; bu
   }
 }
 
-export async function recomputeScore(id: string): Promise<{ success: boolean; score: number; band: string }> {
+export async function recomputeScore(id: string): Promise<{ success: boolean; score: number; band: string; auditRecord?: { id: string } }> {
   const response = await fetch(`${API_BASE}/msme/${id}/score/recompute`, {
     method: "POST",
     headers: getHeaders(),
