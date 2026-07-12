@@ -128,39 +128,26 @@ export default function WhatIfSimulator({ baseScore, msmeId, profileData }: What
           fraud_risk_score: profileData?.fraud_risk_score || 0.1
         };
  
-        // Try direct call to Python ML Service (/simulate endpoint) first
         let res;
         try {
-          const response = await fetch("http://127.0.0.1:8000/simulate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(features),
-            signal: controller.signal
-          });
-          if (!response.ok) throw new Error("direct 8000 failed");
-          res = await response.json();
-        } catch (e: any) {
-          if (e.name === 'AbortError') return;
-          try {
-            // Final fallback to simulateScoreApi helper (which goes through Express server.js /simulate)
-            const { promoter_credit_score, upi_txn_frequency_monthly, ...restFeatures } = features;
-            const compatFeatures = {
-              promoter_credit_score: promoterCreditScore,
-              commercial_assets_value: profileData?.commercial_assets_value ?? 0,
-              bank_asset_value: profileData?.bank_asset_value ?? 0,
-              gst_monthly_turnover_inr: profileData?.gst_monthly_turnover_inr ?? 0,
-              gst_filing_regularity_score: gstCompliance,
-              upi_txn_frequency_monthly: upiTxnFrequency,
-              upi_txn_volume_inr_monthly: upiTurnover * 100000,
-              epfo_contribution_consistency_months: profileData?.epfo_contribution_consistency_months ?? 0,
-              aa_linked_accounts_count: profileData?.aa_linked_accounts_count ?? 1,
-              ...restFeatures
-            };
-            res = await simulateScoreApi(msmeId, compatFeatures);
-          } catch (err: any) {
-            if (err.name === 'AbortError') return;
-            console.error("Direct and proxy fallback simulation failed:", err);
-          }
+          // Fallback to simulateScoreApi helper (which goes through Express server.js /simulate)
+          const { promoter_credit_score, upi_txn_frequency_monthly, ...restFeatures } = features;
+          const compatFeatures = {
+            promoter_credit_score: promoterCreditScore,
+            commercial_assets_value: profileData?.commercial_assets_value ?? 0,
+            bank_asset_value: profileData?.bank_asset_value ?? 0,
+            gst_monthly_turnover_inr: profileData?.gst_monthly_turnover_inr ?? 0,
+            gst_filing_regularity_score: gstCompliance,
+            upi_txn_frequency_monthly: upiTxnFrequency,
+            upi_txn_volume_inr_monthly: upiTurnover * 100000,
+            epfo_contribution_consistency_months: profileData?.epfo_contribution_consistency_months ?? 0,
+            aa_linked_accounts_count: profileData?.aa_linked_accounts_count ?? 1,
+            ...restFeatures
+          };
+          res = await simulateScoreApi(msmeId, compatFeatures);
+        } catch (err: any) {
+          if (err.name === 'AbortError') return;
+          console.error("Simulation failed:", err);
         }
  
         if (controller.signal.aborted) return;

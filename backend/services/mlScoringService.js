@@ -7,7 +7,7 @@ const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://127.0.0.1:8000";
  */
 async function getMlPrediction(features) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 seconds timeout
+  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 seconds timeout, to accommodate Render free-tier cold starts
 
   try {
     const url = `${ML_SERVICE_URL}/predict`;
